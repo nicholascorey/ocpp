@@ -232,3 +232,49 @@ class UpdateFirmware:
 class DataTransfer:
     status: enums.DataTransferStatus
     data: Optional[str] = None
+
+
+ResponseMessageType = (
+    # Called from Charge Point
+    Authorize
+    | BootNotification
+    | DiagnosticsStatusNotification
+    | FirmwareStatusNotification
+    | Heartbeat
+    | LogStatusNotification  # security spec
+    | MeterValues
+    | SecurityEventNotification  # security spec
+    | SignedFirmwareStatusNotification  # security spec
+    | StartTransaction
+    | StatusNotification
+    | StopTransaction
+    # Called from Central System
+    | CancelReservation
+    | CertificateSigned  # security spec
+    | ChangeAvailability
+    | ChangeConfiguration
+    | ClearCache
+    | ClearChargingProfile
+    | DeleteCertificate  # security spec
+    | ExtendedTriggerMessage  # security spec
+    | GetCompositeSchedule
+    | GetConfiguration
+    | GetDiagnostics
+    | GetInstalledCertificateIds  # security spec
+    | GetLocalListVersion
+    | GetLog  # security spec
+    | InstallCertificate  # security spec
+    | RemoteStartTransaction
+    | RemoteStopTransaction
+    | ReserveNow
+    | Reset
+    | SendLocalList
+    | SetChargingProfile
+    | SignCertificate  # security spec
+    | SignedUpdateFirmware  # security spec
+    | TriggerMessage
+    | UnlockConnector
+    | UpdateFirmware
+    # Called from either Charge Point or Central System
+    | DataTransfer
+)

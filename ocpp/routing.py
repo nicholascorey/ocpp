@@ -1,9 +1,53 @@
 import functools
+from argparse import Action
+from typing import Any, Callable, TypeVar
 
-routables = []
+from ocpp.v16 import ChargePoint, call, call_result, enums
+
+routables: list[str] = []
 
 
-def on(action, *, skip_schema_validation=False):
+ChargePointT = TypeVar("ChargePointT", bound=ChargePoint)
+CallT = TypeVar("CallT", bound=call.CallMessageType)
+ResponseT = TypeVar("ResponseT", bound=call_result.ResponseMessageType)
+
+TypedOcppCallHandler = Callable[[ChargePointT, CallT], ResponseT]
+UntypedOcppCallHandler = Callable[..., ResponseT]
+
+TypedHandlerDecorator = Callable[
+    [TypedOcppCallHandler[ChargePointT, CallT, ResponseT]],
+    UntypedOcppCallHandler[ResponseT],
+]
+UntypedHandlerDecorator = Callable[
+    [UntypedOcppCallHandler[ResponseT]],
+    UntypedOcppCallHandler[ResponseT],
+]
+
+
+def on_typed(
+    call_type: type[CallT], skip_schema_validation: bool = False
+) -> TypedHandlerDecorator[ChargePointT, CallT, ResponseT]:
+
+    def decorator(
+        func: TypedOcppCallHandler[ChargePointT, CallT, ResponseT],
+    ) -> UntypedOcppCallHandler[ResponseT]:
+        @functools.wraps(func)
+        def inner(self: ChargePointT, **kwargs: dict[str, Any]):
+            request = call_type(**kwargs)
+            return func(self, request)
+
+        inner._on_action = enums.Action(call_type.__name__)
+        inner._skip_schema_validation = skip_schema_validation
+        if func.__name__ not in routables:
+            routables.append(func.__name__)
+        return inner
+
+    return decorator
+
+
+def on(
+    action: Action, *, skip_schema_validation: bool = False
+) -> UntypedHandlerDecorator[ResponseT]:
     """
     Function decorator to mark function as handler for specific action. The
     wrapped function may be async or sync.
@@ -42,9 +86,11 @@ def on(action, *, skip_schema_validation=False):
 
     """
 
-    def decorator(func):
+    def decorator(
+        func: UntypedOcppCallHandler[ResponseT],
+    ) -> UntypedOcppCallHandler[ResponseT]:
         @functools.wraps(func)
-        def inner(*args, **kwargs):
+        def inner(*args: tuple[Any, ...], **kwargs: dict[str, Any]):
             return func(*args, **kwargs)
 
         inner._on_action = action

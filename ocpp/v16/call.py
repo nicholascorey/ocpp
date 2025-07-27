@@ -225,7 +225,7 @@ class LogStatusNotification:
 @dataclass
 class MeterValues:
     connector_id: int
-    meter_value: List = field(default_factory=list)
+    meter_value: List[datatypes.MeterValue] = field(default_factory=list)
     transaction_id: Optional[int] = None
 
 
@@ -286,3 +286,49 @@ class DataTransfer:
     vendor_id: str
     message_id: Optional[str] = None
     data: Optional[str] = None
+
+
+CallMessageType = (
+    # Called from Charge Point
+    Authorize
+    | BootNotification
+    | DiagnosticsStatusNotification
+    | FirmwareStatusNotification
+    | Heartbeat
+    | LogStatusNotification  # security spec
+    | MeterValues
+    | SecurityEventNotification  # security spec
+    | SignedFirmwareStatusNotification  # security spec
+    | StartTransaction
+    | StatusNotification
+    | StopTransaction
+    # Called from Central System
+    | CancelReservation
+    | CertificateSigned  # security spec
+    | ChangeAvailability
+    | ChangeConfiguration
+    | ClearCache
+    | ClearChargingProfile
+    | DeleteCertificate  # security spec
+    | ExtendedTriggerMessage  # security spec
+    | GetCompositeSchedule
+    | GetConfiguration
+    | GetDiagnostics
+    | GetInstalledCertificateIds  # security spec
+    | GetLocalListVersion
+    | GetLog  # security spec
+    | InstallCertificate  # security spec
+    | RemoteStartTransaction
+    | RemoteStopTransaction
+    | ReserveNow
+    | Reset
+    | SendLocalList
+    | SetChargingProfile
+    | SignCertificate  # security spec
+    | SignedUpdateFirmware  # security spec
+    | TriggerMessage
+    | UnlockConnector
+    | UpdateFirmware
+    # Called from either Charge Point or Central System
+    | DataTransfer
+)
