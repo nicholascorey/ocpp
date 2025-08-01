@@ -9,7 +9,6 @@ from typing import Any, Dict, List, Union, get_args, get_origin
 
 from ocpp.exceptions import NotImplementedError, NotSupportedError, OCPPError
 from ocpp.messages import Call, MessageType, unpack, validate_payload
-from ocpp.routing import create_route_map
 
 LOGGER = logging.getLogger("ocpp")
 
@@ -225,6 +224,8 @@ class ChargePoint:
         # A dictionary that hooks for Actions. So if the CS receives a it will
         # look up the Action into this map and execute the corresponding hooks
         # if exists.
+        from ocpp.routing import create_route_map
+
         self.route_map = create_route_map(self)
 
         self._call_lock = asyncio.Lock()
