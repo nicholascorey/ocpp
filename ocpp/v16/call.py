@@ -263,7 +263,7 @@ class StopTransaction:
     transaction_id: int
     reason: Optional[enums.Reason] = None
     id_tag: Optional[str] = None
-    transaction_data: Optional[List] = None
+    transaction_data: Optional[List[datatypes.MeterValue]] = None
 
 
 @dataclass

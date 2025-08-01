@@ -1,6 +1,6 @@
 import functools
 from argparse import Action
-from typing import Any, Callable, TypeVar
+from typing import Any, Awaitable, Callable, TypeVar
 
 from ocpp.v16 import ChargePoint, call, call_result, enums
 
@@ -11,7 +11,7 @@ ChargePointT = TypeVar("ChargePointT", bound=ChargePoint)
 CallT = TypeVar("CallT", bound=call.CallMessageType)
 ResponseT = TypeVar("ResponseT", bound=call_result.ResponseMessageType)
 
-TypedOcppCallHandler = Callable[[ChargePointT, CallT], ResponseT]
+TypedOcppCallHandler = Callable[[ChargePointT, CallT], ResponseT | Awaitable[ResponseT]]
 UntypedOcppCallHandler = Callable[..., ResponseT]
 
 TypedHandlerDecorator = Callable[
