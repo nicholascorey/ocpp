@@ -12,7 +12,7 @@ CallT = TypeVar("CallT", bound=call.CallMessageType)
 ResponseT = TypeVar("ResponseT", bound=call_result.ResponseMessageType)
 
 TypedOcppCallHandler = Callable[[ChargePointT, CallT], ResponseT | Awaitable[ResponseT]]
-UntypedOcppCallHandler = Callable[..., ResponseT]
+UntypedOcppCallHandler = Callable[..., ResponseT | Awaitable[ResponseT]]
 
 TypedHandlerDecorator = Callable[
     [TypedOcppCallHandler[ChargePointT, CallT, ResponseT]],
