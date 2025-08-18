@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from ocpp.v16 import datatypes, enums
 
@@ -225,7 +225,7 @@ class LogStatusNotification:
 @dataclass
 class MeterValues:
     connector_id: int
-    meter_value: List[datatypes.MeterValue] = field(default_factory=list)
+    meter_value: List[dict[str, list[dict[str, Any]]]] = field(default_factory=list)
     transaction_id: Optional[int] = None
 
 
